@@ -1,37 +1,39 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
-
-import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+import { Tabs } from "expo-router";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { View, Text } from "react-native";
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
   return (
     <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+      screenOptions={({ route }) => ({
         headerShown: false,
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
-          ),
-        }}
-      />
+        tabBarStyle: { backgroundColor: "#030303" },
+        tabBarIcon: ({ focused }) => {
+          let iconName: "home" | "search" | "book" = "home";
+          let underline = focused
+            ? { borderBottomWidth: 2, borderBottomColor: "#1e90ff" }
+            : {};
+
+          if (route.name === "home") {
+            iconName = "home";
+          } else if (route.name === "search") {
+            iconName = "search";
+          } else if (route.name === "library") {
+            iconName = "book";
+          }
+
+          return (
+            <View style={[{ alignItems: "center" }, underline]}>
+              <Ionicons name={iconName} size={24} color="#fff" />
+            </View>
+          );
+        },
+        tabBarShowLabel: false,
+      })}
+    >
+      <Tabs.Screen name="home" />
+      <Tabs.Screen name="search" />
+      <Tabs.Screen name="library" />
     </Tabs>
   );
 }
