@@ -106,7 +106,7 @@ const Search = () => {
         style={{
           backgroundColor: "#fff",
           margin: 20,
-          marginTop: 30,
+          marginTop: 50,
           padding: 10,
           borderRadius: 10,
         }}

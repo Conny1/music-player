@@ -6,7 +6,7 @@ import { Href, useRouter } from "expo-router";
 type Props = {
   item: { song: string; singer: string; imgurl: string };
 };
-const Song = ({ item }: Props) => {
+const PhoneSong = ({ item }: Props) => {
   const navigation = useRouter();
   return (
     <TouchableOpacity
@@ -38,7 +38,7 @@ const Song = ({ item }: Props) => {
   );
 };
 
-export default Song;
+export default PhoneSong;
 
 const styles = StyleSheet.create({
   songContainer: {
