@@ -1,9 +1,11 @@
 import { Tabs } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { View, Text } from "react-native";
+import { UserProvider } from "@/hooks/context";
 
 export default function TabLayout() {
   return (
+    // <UserProvider>
     <Tabs
       screenOptions={({ route }) => ({
         headerShown: false,
@@ -35,5 +37,6 @@ export default function TabLayout() {
       <Tabs.Screen name="search" />
       <Tabs.Screen name="library" />
     </Tabs>
+    // </UserProvider>
   );
 }

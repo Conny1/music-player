@@ -1,12 +1,18 @@
 import { ImageBackground, StyleSheet, Text, View } from "react-native";
-import React, { useEffect } from "react";
-import { useNavigation } from "expo-router";
+import React, { useEffect, useState } from "react";
+import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import * as Progress from "react-native-progress";
 import { MaterialIcons } from "@expo/vector-icons";
+import { useUserContext } from "@/hooks/context";
+import { localMusicType } from "@/app/utils/types";
 
 const Play = () => {
+  const [music, setmusic] = useState<localMusicType | undefined>(undefined);
   const navigation = useNavigation();
+  const route = useRouter();
+  const song = useLocalSearchParams();
+  const { getMusicById, playSound } = useUserContext();
   useEffect(() => {
     navigation.setOptions({
       headerShown: true,
@@ -16,10 +22,20 @@ const Play = () => {
       },
       headerTintColor: "#fff",
     });
+    const id = song.id as string;
+    const music = getMusicById(id);
+    console.log(music);
+    if (!music || music.length <= 0) {
+      return route.push("/home");
+    } else {
+      setmusic(music[0]);
+      playSound(music[0].uri);
+    }
   }, []);
+
   let bgUrl =
     "https://images.unsplash.com/photo-1724086575243-6796fc662673?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
-
+  if (!song?.id) return route.push("/");
   return (
     <View style={{ ...styles.play }}>
       <ImageBackground
@@ -30,8 +46,18 @@ const Play = () => {
         <View style={styles.bgImgtopper}></View>
         <View style={styles.songInfoContainer}>
           <View style={styles.likeContainer}>
-            <Text style={{ color: "#fff", fontSize: 20, fontWeight: "700" }}>
-              Melbourne sunset
+            <Text
+              style={{
+                color: "#fff",
+                fontSize: 20,
+                fontWeight: "700",
+                width: 230,
+              }}
+            >
+              {music?.filename.substring(0, 50)}{" "}
+              {music?.filename && music?.filename?.length > 50
+                ? " . . ."
+                : null}
             </Text>
             <AntDesign name="heart" size={24} color="#fff" />
           </View>

@@ -5,11 +5,18 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PhoneSong from "@/components/library/PhoneSong";
 import { MaterialIcons } from "@expo/vector-icons";
+import { localMusicType } from "../utils/types";
+import { useUserContext } from "@/hooks/context";
 
 const Library = () => {
+  const { musicFiles: music } = useUserContext();
+  const [musicFiles] = useState<localMusicType[] | []>(music);
+  const [sound, setSound] = useState();
+  // Load music files from phone storage
+
   const songs = [
     {
       song: "call living",
@@ -140,7 +147,7 @@ const Library = () => {
       </View>
       <View style={styles.songListCon}>
         <FlatList
-          data={songs}
+          data={musicFiles}
           renderItem={({ item, index }) => (
             <PhoneSong key={index} item={item} />
           )}

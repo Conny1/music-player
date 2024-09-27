@@ -5,11 +5,17 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import CategoryCard from "@/components/home/CategoryCard";
 import Song from "@/components/home/Song";
+import { useUserContext } from "@/hooks/context";
 
 const Home = () => {
+  const { requestPermission } = useUserContext();
+  useEffect(() => {
+    requestPermission();
+  }, []);
+
   const category = [
     {
       name: "Chill ",
