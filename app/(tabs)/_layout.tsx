@@ -5,7 +5,6 @@ import { UserProvider } from "@/hooks/context";
 
 export default function TabLayout() {
   return (
-    // <UserProvider>
     <Tabs
       screenOptions={({ route }) => ({
         headerShown: false,
@@ -37,6 +36,5 @@ export default function TabLayout() {
       <Tabs.Screen name="search" />
       <Tabs.Screen name="library" />
     </Tabs>
-    // </UserProvider>
   );
 }

@@ -9,9 +9,10 @@ import React, { useEffect } from "react";
 import CategoryCard from "@/components/home/CategoryCard";
 import Song from "@/components/home/Song";
 import { useUserContext } from "@/hooks/context";
+import { SongPlayer } from "@/components/global";
 
 const Home = () => {
-  const { requestPermission } = useUserContext();
+  const { requestPermission, isMusicPlaying } = useUserContext();
   useEffect(() => {
     requestPermission();
   }, []);
@@ -157,6 +158,12 @@ const Home = () => {
           renderItem={({ item, index }) => <Song key={index} item={item} />}
         />
       </View>
+
+      {isMusicPlaying && (
+        <View style={styles.playerContainer}>
+          <SongPlayer />
+        </View>
+      )}
     </View>
   );
 };
@@ -164,6 +171,17 @@ const Home = () => {
 export default Home;
 
 const styles = StyleSheet.create({
+  playerContainer: {
+    backgroundColor: "#221010",
+    position: "absolute",
+
+    bottom: 0,
+    width: "auto",
+    borderRadius: 20,
+    // marginHorizontal: 20,
+    left: 0,
+    right: 0,
+  },
   pickUpContainer: {
     marginTop: 50,
     marginHorizontal: 20,
@@ -175,6 +193,7 @@ const styles = StyleSheet.create({
   home: {
     backgroundColor: "#030303",
     height: "100%",
+    position: "relative",
   },
   viewallbtn: {
     backgroundColor: "#1c1c1e",

@@ -10,123 +10,12 @@ import PhoneSong from "@/components/library/PhoneSong";
 import { MaterialIcons } from "@expo/vector-icons";
 import { localMusicType } from "../utils/types";
 import { useUserContext } from "@/hooks/context";
+import { SongPlayer } from "@/components/global";
 
 const Library = () => {
-  const { musicFiles: music } = useUserContext();
+  const { musicFiles: music, isMusicPlaying } = useUserContext();
   const [musicFiles] = useState<localMusicType[] | []>(music);
-  const [sound, setSound] = useState();
-  // Load music files from phone storage
 
-  const songs = [
-    {
-      song: "call living",
-      singer: "Tom",
-      imgurl:
-        "https://images.unsplash.com/photo-1724086575243-6796fc662673?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-    {
-      song: "call living",
-      singer: "Tom",
-      imgurl:
-        "https://images.unsplash.com/photo-1724086575243-6796fc662673?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-    {
-      song: "call living",
-      singer: "Tom",
-      imgurl:
-        "https://images.unsplash.com/photo-1724086575243-6796fc662673?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-    {
-      song: "call living",
-      singer: "Tom",
-      imgurl:
-        "https://images.unsplash.com/photo-1724086575243-6796fc662673?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-    {
-      song: "call living",
-      singer: "Tom",
-      imgurl:
-        "https://images.unsplash.com/photo-1724086575243-6796fc662673?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-    {
-      song: "call living",
-      singer: "Tom",
-      imgurl:
-        "https://images.unsplash.com/photo-1724086575243-6796fc662673?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-    {
-      song: "call living",
-      singer: "Tom",
-      imgurl:
-        "https://images.unsplash.com/photo-1724086575243-6796fc662673?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-    {
-      song: "call living",
-      singer: "Tom",
-      imgurl:
-        "https://images.unsplash.com/photo-1724086575243-6796fc662673?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-    {
-      song: "call living",
-      singer: "Tom",
-      imgurl:
-        "https://images.unsplash.com/photo-1724086575243-6796fc662673?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-    {
-      song: "call living",
-      singer: "Tom",
-      imgurl:
-        "https://images.unsplash.com/photo-1724086575243-6796fc662673?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-    {
-      song: "call living",
-      singer: "Tom",
-      imgurl:
-        "https://images.unsplash.com/photo-1724086575243-6796fc662673?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-    {
-      song: "call living",
-      singer: "Tom",
-      imgurl:
-        "https://images.unsplash.com/photo-1724086575243-6796fc662673?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-    {
-      song: "call living",
-      singer: "Tom",
-      imgurl:
-        "https://images.unsplash.com/photo-1724086575243-6796fc662673?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-    {
-      song: "call living",
-      singer: "Tom",
-      imgurl:
-        "https://images.unsplash.com/photo-1724086575243-6796fc662673?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-    {
-      song: "call living",
-      singer: "Tom",
-      imgurl:
-        "https://images.unsplash.com/photo-1724086575243-6796fc662673?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-    {
-      song: "call living",
-      singer: "Tom",
-      imgurl:
-        "https://images.unsplash.com/photo-1724086575243-6796fc662673?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-    {
-      song: "call living",
-      singer: "Tom",
-      imgurl:
-        "https://images.unsplash.com/photo-1724086575243-6796fc662673?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-    {
-      song: "call living",
-      singer: "Tom",
-      imgurl:
-        "https://images.unsplash.com/photo-1724086575243-6796fc662673?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-  ];
   return (
     <View style={styles.libraryContainer}>
       <View style={styles.addContainer}>
@@ -153,6 +42,11 @@ const Library = () => {
           )}
         />
       </View>
+      {isMusicPlaying && (
+        <View style={styles.playerContainer}>
+          <SongPlayer />
+        </View>
+      )}
     </View>
   );
 };
@@ -182,5 +76,16 @@ const styles = StyleSheet.create({
     width: 120,
     flexDirection: "row",
     gap: 10,
+  },
+  playerContainer: {
+    backgroundColor: "#221010",
+    position: "absolute",
+
+    bottom: 0,
+    width: "auto",
+    borderRadius: 20,
+    // marginHorizontal: 20,
+    left: 0,
+    right: 0,
   },
 });

@@ -9,8 +9,12 @@ import {
 import React from "react";
 import SearchedCard from "@/components/search/SearchedCard";
 import BasedonLikedCard from "@/components/search/BaseonLikedCard";
+import { useUserContext } from "@/hooks/context";
+import { SongPlayer } from "@/components/global";
 
 const Search = () => {
+  const { isMusicPlaying } = useUserContext();
+
   const searchResults = [
     {
       title: "call living",
@@ -149,6 +153,11 @@ const Search = () => {
           )}
         />
       </View>
+      {isMusicPlaying && (
+        <View style={styles.playerContainer}>
+          <SongPlayer />
+        </View>
+      )}
     </View>
   );
 };
@@ -179,5 +188,16 @@ const styles = StyleSheet.create({
   basedOnlikesContainer: {
     marginHorizontal: 15,
     height: 300,
+  },
+  playerContainer: {
+    backgroundColor: "#221010",
+    position: "absolute",
+
+    bottom: 0,
+    width: "auto",
+    borderRadius: 20,
+    // marginHorizontal: 20,
+    left: 0,
+    right: 0,
   },
 });

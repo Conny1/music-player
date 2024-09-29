@@ -1,18 +1,13 @@
-import { ImageBackground, StyleSheet, Text, View } from "react-native";
+import { ImageBackground, StyleSheet, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
-import AntDesign from "@expo/vector-icons/AntDesign";
-import * as Progress from "react-native-progress";
-import { MaterialIcons } from "@expo/vector-icons";
-import { useUserContext } from "@/hooks/context";
-import { localMusicType } from "@/app/utils/types";
+import { SongPlayer } from "@/components/global";
 
 const Play = () => {
-  const [music, setmusic] = useState<localMusicType | undefined>(undefined);
   const navigation = useNavigation();
   const route = useRouter();
   const song = useLocalSearchParams();
-  const { getMusicById, playSound } = useUserContext();
+
   useEffect(() => {
     navigation.setOptions({
       headerShown: true,
@@ -22,15 +17,6 @@ const Play = () => {
       },
       headerTintColor: "#fff",
     });
-    const id = song.id as string;
-    const music = getMusicById(id);
-    console.log(music);
-    if (!music || music.length <= 0) {
-      return route.push("/home");
-    } else {
-      setmusic(music[0]);
-      playSound(music[0].uri);
-    }
   }, []);
 
   let bgUrl =
@@ -44,43 +30,7 @@ const Play = () => {
         style={styles.bgimage}
       >
         <View style={styles.bgImgtopper}></View>
-        <View style={styles.songInfoContainer}>
-          <View style={styles.likeContainer}>
-            <Text
-              style={{
-                color: "#fff",
-                fontSize: 20,
-                fontWeight: "700",
-                width: 230,
-              }}
-            >
-              {music?.filename.substring(0, 50)}{" "}
-              {music?.filename && music?.filename?.length > 50
-                ? " . . ."
-                : null}
-            </Text>
-            <AntDesign name="heart" size={24} color="#fff" />
-          </View>
-          <Text style={{ color: "gray", marginBottom: 30 }}>3000 days </Text>
-
-          <View style={styles.progressContainer}>
-            <Progress.Bar
-              progress={0.3}
-              width={300}
-              color="#fff"
-              borderRadius={10}
-              height={2}
-            />
-          </View>
-
-          <View style={styles.btnGroup}>
-            <MaterialIcons name="replay" size={24} color="#fff" />
-            <MaterialIcons name="arrow-left" size={48} color="#fff" />
-            <MaterialIcons name="play-circle-filled" size={48} color="#fff" />
-            <MaterialIcons name="arrow-right" size={48} color="#fff" />
-            <MaterialIcons name="refresh" size={24} color="#fff" />
-          </View>
-        </View>
+        <SongPlayer />
       </ImageBackground>
     </View>
   );

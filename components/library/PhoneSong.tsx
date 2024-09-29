@@ -1,12 +1,7 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import {
-  Href,
-  useLocalSearchParams,
-  useNavigation,
-  useRouter,
-} from "expo-router";
+import { Href, useRouter } from "expo-router";
 import { localMusicType } from "@/app/utils/types";
 import { useUserContext } from "@/hooks/context";
 
@@ -14,9 +9,9 @@ type Props = {
   item: localMusicType;
 };
 const PhoneSong = ({ item }: Props) => {
-  const [playsong, setplaysong] = useState<localMusicType>();
   const navigation = useRouter();
-  const route = useNavigation();
+  const { playSound, musicFiles } = useUserContext();
+  const [pauseActive, setpauseActive] = useState(false);
 
   return (
     <TouchableOpacity
@@ -48,15 +43,24 @@ const PhoneSong = ({ item }: Props) => {
               {item.mediaType}
             </Text>
             <Text style={{ color: "#fff", fontSize: 10 }}>
-              {Number(item.duration / 60) >= 59
-                ? (item.duration / 60 / 60).toFixed(2)
-                : (item.duration / 60).toFixed(2)}
+              {(item.duration / 60).toFixed(2)} min
             </Text>
           </View>
         </View>
       </View>
 
-      <AntDesign name="caretright" size={24} color="#fff" />
+      <TouchableOpacity
+        onPress={() => {
+          playSound(item.uri);
+          setpauseActive(false);
+        }}
+      >
+        {pauseActive ? (
+          <AntDesign name="pause" size={24} color="#fff" />
+        ) : (
+          <AntDesign name="caretright" size={24} color="#fff" />
+        )}
+      </TouchableOpacity>
     </TouchableOpacity>
   );
 };
