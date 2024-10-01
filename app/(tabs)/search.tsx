@@ -6,14 +6,16 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import SearchedCard from "@/components/search/SearchedCard";
 import BasedonLikedCard from "@/components/search/BaseonLikedCard";
 import { useUserContext } from "@/hooks/context";
 import { SongPlayer } from "@/components/global";
+import { genraType } from "../utils/types";
 
 const Search = () => {
-  const { isMusicPlaying } = useUserContext();
+  const { isMusicPlaying, getMusicGenre } = useUserContext();
+  const [genre, setgenre] = useState<genraType[] | []>([]);
 
   const searchResults = [
     {
@@ -84,26 +86,15 @@ const Search = () => {
     },
   ];
 
-  const likesBased = [
-    {
-      music: "Indie mix",
-    },
-    {
-      music: "Music mix",
-    },
-    {
-      music: "Pop mix",
-    },
-    {
-      music: "Chill mix",
-    },
-    {
-      music: "Reggae mix",
-    },
-    {
-      music: "indie mix",
-    },
-  ];
+  useEffect(() => {
+    getMusicGenre()
+      .then((item) => {
+        setgenre(item);
+        console.log(item);
+      })
+      .catch((error) => console.log(error));
+  }, []);
+
   return (
     <View style={styles.search}>
       <TextInput
@@ -141,23 +132,23 @@ const Search = () => {
           marginHorizontal: 15,
         }}
       >
-        Based on what you like
+        Music by genre
       </Text>
       <View style={styles.basedOnlikesContainer}>
         <FlatList
-          data={likesBased}
+          data={genre}
           scrollEnabled
           showsVerticalScrollIndicator={false}
           renderItem={({ item, index }) => (
-            <BasedonLikedCard key={index} item={item} />
+            <BasedonLikedCard key={item.id} item={item} />
           )}
         />
       </View>
-      {isMusicPlaying && (
+      {/* {isMusicPlaying && (
         <View style={styles.playerContainer}>
           <SongPlayer />
         </View>
-      )}
+      )} */}
     </View>
   );
 };

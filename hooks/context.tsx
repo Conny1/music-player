@@ -6,7 +6,7 @@ import React, {
   useEffect,
 } from "react";
 import * as MediaLibrary from "expo-media-library";
-import { localMusicType } from "@/app/utils/types";
+import { genraType, localMusicType } from "@/app/utils/types";
 import { Audio } from "expo-av";
 
 // Define the context type
@@ -18,6 +18,7 @@ type ContextType = {
   nextSong: (id: string) => localMusicType;
   prevSong: (id: string) => localMusicType;
   isMusicPlaying: boolean;
+  getMusicGenre: () => Promise<genraType[] | []>;
 };
 
 // Provide a default empty context value
@@ -36,6 +37,7 @@ const defaultContextValue: ContextType = {
   nextSong: (id) => defaultMusic,
   prevSong: (id) => defaultMusic,
   isMusicPlaying: false,
+  getMusicGenre: async () => [],
 };
 
 // Create a Context with the defined type
@@ -114,6 +116,18 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     }
     return song;
   };
+  // Drezer Api
+  const getMusicGenre = async () => {
+    const uri = process.env.EXPO_PUBLIC_DREEZER_BASE_URL;
+    console.log(uri);
+    const resp = await fetch(`${uri}/genre`);
+    const dataResp = await resp.json();
+
+    if (dataResp) {
+      return dataResp?.data;
+    }
+    return [];
+  };
 
   return (
     <UserContext.Provider
@@ -125,6 +139,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         nextSong,
         prevSong,
         isMusicPlaying,
+        getMusicGenre,
       }}
     >
       {children}

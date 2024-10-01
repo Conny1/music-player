@@ -42,11 +42,11 @@ const Library = () => {
           )}
         />
       </View>
-      {isMusicPlaying && (
+      {/* {isMusicPlaying && (
         <View style={styles.playerContainer}>
           <SongPlayer />
         </View>
-      )}
+      )} */}
     </View>
   );
 };

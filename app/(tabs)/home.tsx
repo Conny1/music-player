@@ -159,11 +159,11 @@ const Home = () => {
         />
       </View>
 
-      {isMusicPlaying && (
+      {/* {isMusicPlaying && (
         <View style={styles.playerContainer}>
           <SongPlayer />
         </View>
-      )}
+      )} */}
     </View>
   );
 };
