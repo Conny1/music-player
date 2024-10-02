@@ -11,7 +11,7 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useUserContext } from "@/hooks/context";
 import { localMusicType } from "@/app/utils/types";
-import { ProgressBar } from "@/components/global";
+import ProgressBar from "@/components/global/ProgresBar";
 
 const Player = () => {
   const { getMusicById, playSound, nextSong, prevSong } = useUserContext();
@@ -26,7 +26,7 @@ const Player = () => {
     if (id) {
       console.log(music, "music2", id);
       if (!music || music.length <= 0) {
-        return route.push("/home");
+        return route.push("/audio");
       } else {
         setmusic(music[0]);
         if (music[0].uri) {

@@ -6,15 +6,17 @@ import {
   View,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import PhoneSong from "@/components/library/PhoneSong";
+import PhoneSong from "@/components/audio/PhoneSong";
 import { MaterialIcons } from "@expo/vector-icons";
 import { localMusicType } from "../utils/types";
 import { useUserContext } from "@/hooks/context";
-import { SongPlayer } from "@/components/global";
 
-const Library = () => {
-  const { musicFiles: music, isMusicPlaying } = useUserContext();
-  const [musicFiles] = useState<localMusicType[] | []>(music);
+const Audio = () => {
+  const { requestPermission } = useUserContext();
+  const [musicFiles, setmusicFiles] = useState<localMusicType[] | []>([]);
+  useEffect(() => {
+    requestPermission().then((item) => setmusicFiles(item));
+  }, []);
 
   return (
     <View style={styles.libraryContainer}>
@@ -27,7 +29,7 @@ const Library = () => {
             color: "#fff",
           }}
         >
-          Your phones music
+          Your music
         </Text>
         <TouchableOpacity style={styles.addBtn}>
           <MaterialIcons name="add" size={24} color="#fff" />
@@ -51,7 +53,7 @@ const Library = () => {
   );
 };
 
-export default Library;
+export default Audio;
 
 const styles = StyleSheet.create({
   libraryContainer: {

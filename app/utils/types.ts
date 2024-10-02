@@ -6,6 +6,14 @@ export type localMusicType = {
   duration: number;
 };
 
+export type localVideoType = {
+  id: string;
+  filename: string;
+  mediaType: string;
+  uri: string;
+  duration: number;
+};
+
 export type genraType = {
   id: number;
   name: string;

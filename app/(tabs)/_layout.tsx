@@ -1,7 +1,6 @@
 import { Tabs } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { View, Text } from "react-native";
-import { UserProvider } from "@/hooks/context";
 
 export default function TabLayout() {
   return (
@@ -10,17 +9,15 @@ export default function TabLayout() {
         headerShown: false,
         tabBarStyle: { backgroundColor: "#030303" },
         tabBarIcon: ({ focused }) => {
-          let iconName: "home" | "search" | "book" = "home";
+          let iconName: "videocam" | "musical-notes" = "videocam";
           let underline = focused
             ? { borderBottomWidth: 2, borderBottomColor: "#1e90ff" }
             : {};
 
-          if (route.name === "home") {
-            iconName = "home";
-          } else if (route.name === "search") {
-            iconName = "search";
-          } else if (route.name === "library") {
-            iconName = "book";
+          if (route.name === "audio") {
+            iconName = "musical-notes";
+          } else if (route.name === "video") {
+            iconName = "videocam";
           }
 
           return (
@@ -32,9 +29,8 @@ export default function TabLayout() {
         tabBarShowLabel: false,
       })}
     >
-      <Tabs.Screen name="home" />
-      <Tabs.Screen name="search" />
-      <Tabs.Screen name="library" />
+      <Tabs.Screen name="audio" />
+      <Tabs.Screen name="video" />
     </Tabs>
   );
 }

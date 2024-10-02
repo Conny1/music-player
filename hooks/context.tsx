@@ -13,7 +13,7 @@ import { Audio } from "expo-av";
 type ContextType = {
   getMusicById: (id: string) => localMusicType[] | [];
   musicFiles: localMusicType[]; // This is always an array
-  requestPermission: () => Promise<void>; // Async function to request permissions
+  requestPermission: () => Promise<localMusicType[] | []>; // Async function to request permissions
   playSound: (url: string) => Promise<void>;
   nextSong: (id: string) => localMusicType;
   prevSong: (id: string) => localMusicType;
@@ -31,7 +31,7 @@ let defaultMusic = {
 };
 const defaultContextValue: ContextType = {
   musicFiles: [],
-  requestPermission: async () => {},
+  requestPermission: async () => [],
   getMusicById: () => [],
   playSound: async () => {},
   nextSong: (id) => defaultMusic,
@@ -56,14 +56,16 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     const mediaData = media.assets as localMusicType[];
 
     setMusicFiles(mediaData);
+    return mediaData;
   };
 
   const requestPermission = async () => {
     const { status } = await MediaLibrary.requestPermissionsAsync();
     if (status === "granted") {
-      loadMusicFiles();
+      return loadMusicFiles();
     } else {
       alert("Permission to access media library is required!");
+      return [];
     }
   };
 
