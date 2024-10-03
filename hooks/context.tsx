@@ -6,14 +6,18 @@ import React, {
   useEffect,
 } from "react";
 import * as MediaLibrary from "expo-media-library";
-import { genraType, localMusicType } from "@/app/utils/types";
+import { genraType, localMusicType, localVideoType } from "@/app/utils/types";
 import { Audio } from "expo-av";
 
 // Define the context type
 type ContextType = {
   getMusicById: (id: string) => localMusicType[] | [];
+  getVideoById: (id: string) => localVideoType[] | [];
+
   musicFiles: localMusicType[]; // This is always an array
-  requestPermission: () => Promise<localMusicType[] | []>; // Async function to request permissions
+  requestPermission: (
+    type: "audio" | "video"
+  ) => Promise<localMusicType[] | []>; // Async function to request permissions
   playSound: (url: string) => Promise<void>;
   nextSong: (id: string) => localMusicType;
   prevSong: (id: string) => localMusicType;
@@ -33,6 +37,7 @@ const defaultContextValue: ContextType = {
   musicFiles: [],
   requestPermission: async () => [],
   getMusicById: () => [],
+  getVideoById: () => [],
   playSound: async () => {},
   nextSong: (id) => defaultMusic,
   prevSong: (id) => defaultMusic,
@@ -45,24 +50,29 @@ const UserContext = createContext<ContextType>(defaultContextValue);
 
 // Create a Provider component to wrap your app
 export const UserProvider = ({ children }: { children: ReactNode }) => {
-  const [musicFiles, setMusicFiles] = useState<localMusicType[]>([]);
+  const [musicFiles, setMusicFiles] = useState<localMusicType[] | []>([]);
+  const [videoFiles, setvideoFiles] = useState<localVideoType[] | []>([]);
   const [sound, setSound] = useState<Audio.Sound>();
   const [isMusicPlaying, setisMusicPlaying] = useState(false);
 
-  const loadMusicFiles = async () => {
+  const loadMusicFiles = async (type: "audio" | "video") => {
     const media = await MediaLibrary.getAssetsAsync({
-      mediaType: "audio", // Fetch only audio files
+      mediaType: type, // Fetch only audio files
     });
     const mediaData = media.assets as localMusicType[];
+    if (type === "audio") {
+      setMusicFiles(mediaData);
+    } else if (type === "video") {
+      setvideoFiles(mediaData);
+    }
 
-    setMusicFiles(mediaData);
     return mediaData;
   };
 
-  const requestPermission = async () => {
+  const requestPermission = async (type: "audio" | "video") => {
     const { status } = await MediaLibrary.requestPermissionsAsync();
     if (status === "granted") {
-      return loadMusicFiles();
+      return loadMusicFiles(type);
     } else {
       alert("Permission to access media library is required!");
       return [];
@@ -71,6 +81,11 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
   const getMusicById = (id: string) => {
     const filter = musicFiles.filter((item) => item.id === id);
+    return filter;
+  };
+
+  const getVideoById = (id: string) => {
+    const filter = videoFiles.filter((item) => item.id === id);
     return filter;
   };
 
@@ -137,6 +152,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         musicFiles,
         requestPermission,
         getMusicById,
+        getVideoById,
         playSound,
         nextSong,
         prevSong,

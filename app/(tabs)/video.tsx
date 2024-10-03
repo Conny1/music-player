@@ -8,45 +8,17 @@ import {
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { VideoCard } from "@/components/video";
+import { useUserContext } from "@/hooks/context";
+import { useEffect, useState } from "react";
+import { localVideoType } from "../utils/types";
 
 const Video = () => {
-  const videoItem = [
-    {
-      id: "29",
-      filename: "chapter1",
-      mediaType: "video",
-      uri: "videoUrl",
-      duration: 100,
-    },
-    {
-      id: "29",
-      filename: "chapter1",
-      mediaType: "video",
-      uri: "videoUrl",
-      duration: 100,
-    },
-    {
-      id: "29",
-      filename: "chapter1",
-      mediaType: "video",
-      uri: "videoUrl",
-      duration: 100,
-    },
-    {
-      id: "29",
-      filename: "chapter1",
-      mediaType: "video",
-      uri: "videoUrl",
-      duration: 100,
-    },
-    {
-      id: "29",
-      filename: "chapter1",
-      mediaType: "video",
-      uri: "videoUrl",
-      duration: 100,
-    },
-  ];
+  const { requestPermission } = useUserContext();
+  const [videoFiles, setvideoFiles] = useState<localVideoType[] | []>([]);
+  useEffect(() => {
+    requestPermission("video").then((item) => setvideoFiles(item));
+  }, []);
+
   return (
     <View style={styles.libraryContainer}>
       <View style={styles.addContainer}>
@@ -54,11 +26,10 @@ const Video = () => {
           style={{
             fontSize: 20,
             fontWeight: 600,
-
             color: "#fff",
           }}
         >
-          Your Video
+          Your Videos
         </Text>
         <TouchableOpacity style={styles.addBtn}>
           <MaterialIcons name="add" size={24} color="#fff" />
@@ -67,7 +38,7 @@ const Video = () => {
       </View>
       <FlatList
         style={{ marginTop: 20 }}
-        data={videoItem}
+        data={videoFiles}
         renderItem={({ item }) => <VideoCard item={item} />}
         keyExtractor={(item, index) => index.toString()}
         numColumns={2} // Display 2 cards per row

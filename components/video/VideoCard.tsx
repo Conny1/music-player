@@ -8,8 +8,15 @@ type Props = {
   item: localVideoType;
 };
 const VideoCard = ({ item }: Props) => {
+  const route = useRouter();
   return (
-    <View style={styles.videoInfoCon}>
+    <TouchableOpacity
+      onPress={() => {
+        const path = `/videoPlayer/play/${item.id}` as Href<string>;
+        route.push(path);
+      }}
+      style={styles.videoInfoCon}
+    >
       <Image
         style={{ borderRadius: 15, height: 100, width: 150 }} // Add the height and width here
         source={{
@@ -30,7 +37,7 @@ const VideoCard = ({ item }: Props) => {
           </Text>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

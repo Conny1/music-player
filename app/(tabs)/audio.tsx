@@ -15,7 +15,7 @@ const Audio = () => {
   const { requestPermission } = useUserContext();
   const [musicFiles, setmusicFiles] = useState<localMusicType[] | []>([]);
   useEffect(() => {
-    requestPermission().then((item) => setmusicFiles(item));
+    requestPermission("audio").then((item) => setmusicFiles(item));
   }, []);
 
   return (
