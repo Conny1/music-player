@@ -1,14 +1,32 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React, { useState } from "react";
-import AntDesign from "@expo/vector-icons/AntDesign";
+import React, { useEffect, useState } from "react";
+
 import { Href, useRouter } from "expo-router";
 import { localVideoType } from "@/app/utils/types";
+import * as VideoThumbnails from "expo-video-thumbnails";
 
 type Props = {
   item: localVideoType;
 };
 const VideoCard = ({ item }: Props) => {
+  const [thumUrl, setthumUrl] = useState("");
   const route = useRouter();
+  useEffect(() => {
+    const generateThumbnail = async () => {
+      try {
+        const { uri } = await VideoThumbnails.getThumbnailAsync(item.uri, {
+          time: 15000,
+        });
+        setthumUrl(uri);
+      } catch (e) {
+        console.warn(e);
+      }
+    };
+    generateThumbnail();
+  }, [item]);
+  let palceHoledr =
+    "https://images.unsplash.com/photo-1724086575243-6796fc662673?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+
   return (
     <TouchableOpacity
       onPress={() => {
@@ -20,7 +38,7 @@ const VideoCard = ({ item }: Props) => {
       <Image
         style={{ borderRadius: 15, height: 100, width: 150 }} // Add the height and width here
         source={{
-          uri: "https://cdn.iconscout.com/icon/free/png-512/free-music-icon-download-in-svg-png-gif-file-formats--player-mp-song-audio-dj-user-interface-vol-2-pack-icons-14874.png?f=webp&w=256",
+          uri: thumUrl ? thumUrl : palceHoledr,
         }}
         resizeMode="cover" // Use resizeMode for controlling image fitting
       />

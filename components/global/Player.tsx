@@ -14,7 +14,19 @@ import { localMusicType } from "@/app/utils/types";
 import ProgressBar from "@/components/global/ProgresBar";
 
 const Player = () => {
-  const { getMusicById, playSound, nextSong, prevSong } = useUserContext();
+  const {
+    getMusicById,
+    playSound,
+    nextSong,
+    prevSong,
+    pauseSound,
+    isPause,
+    prev,
+    next,
+    setisPause,
+    setnext,
+    setprev,
+  } = useUserContext();
   const [music, setmusic] = useState<localMusicType | undefined>(undefined);
   const route = useRouter();
   const song = useLocalSearchParams();
@@ -55,7 +67,12 @@ const Player = () => {
       <Text style={{ color: "gray", marginBottom: 30 }}>3000 days </Text>
 
       <View style={styles.progressContainer}>
-        <ProgressBar duration={music?.duration} />
+        <ProgressBar
+          duration={music?.duration}
+          isPause={isPause}
+          next={next}
+          prev={prev}
+        />
       </View>
 
       <View style={styles.btnGroup}>
@@ -66,18 +83,48 @@ const Player = () => {
             const prevMusic = prevSong(id);
             playSound(prevMusic.uri);
             setmusic(prevMusic);
+            setprev(true);
+            setnext(true);
+            setisPause(false);
           }}
         >
           <MaterialIcons name="arrow-left" size={48} color="#fff" />
         </TouchableOpacity>
+        {isPause ? (
+          <TouchableOpacity
+            onPress={async () => {
+              console.log("play clicked");
+              await pauseSound("play");
+              setisPause(false);
+              setnext(false);
+              setprev(false);
+            }}
+          >
+            <MaterialIcons name="play-circle-filled" size={48} color="#fff" />
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            onPress={async () => {
+              console.log("pause clicked");
+              await pauseSound("pause");
+              setisPause(true);
+              setnext(false);
+              setprev(false);
+            }}
+          >
+            <MaterialIcons name="pause-circle-filled" size={48} color="#fff" />
+          </TouchableOpacity>
+        )}
 
-        <MaterialIcons name="play-circle-filled" size={48} color="#fff" />
         <TouchableOpacity
           onPress={() => {
             const id = music?.id as string;
             const nextMusic = nextSong(id);
             playSound(nextMusic.uri);
             setmusic(nextMusic);
+            setnext(true);
+            setprev(true);
+            setisPause(false);
           }}
         >
           <MaterialIcons name="arrow-right" size={48} color="#fff" />

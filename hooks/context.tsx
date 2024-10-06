@@ -4,10 +4,11 @@ import React, {
   useContext,
   ReactNode,
   useEffect,
+  useRef,
 } from "react";
 import * as MediaLibrary from "expo-media-library";
 import { genraType, localMusicType, localVideoType } from "@/app/utils/types";
-import { Audio } from "expo-av";
+import { Audio, Video } from "expo-av";
 
 // Define the context type
 type ContextType = {
@@ -23,6 +24,13 @@ type ContextType = {
   prevSong: (id: string) => localMusicType;
   isMusicPlaying: boolean;
   getMusicGenre: () => Promise<genraType[] | []>;
+  pauseSound: (type: "play" | "pause") => void;
+  isPause: boolean;
+  setisPause: React.Dispatch<React.SetStateAction<boolean>>;
+  next: boolean;
+  setnext: React.Dispatch<React.SetStateAction<boolean>>;
+  prev: boolean;
+  setprev: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 // Provide a default empty context value
@@ -43,6 +51,13 @@ const defaultContextValue: ContextType = {
   prevSong: (id) => defaultMusic,
   isMusicPlaying: false,
   getMusicGenre: async () => [],
+  pauseSound: async () => {},
+  isPause: false,
+  setisPause: () => false,
+  next: false,
+  setnext: () => false,
+  prev: false,
+  setprev: () => false,
 };
 
 // Create a Context with the defined type
@@ -54,6 +69,10 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [videoFiles, setvideoFiles] = useState<localVideoType[] | []>([]);
   const [sound, setSound] = useState<Audio.Sound>();
   const [isMusicPlaying, setisMusicPlaying] = useState(false);
+  const [isPause, setisPause] = useState(false);
+  const [next, setnext] = useState(false);
+  const [prev, setprev] = useState(false);
+  const video = useRef<Video>(null);
 
   const loadMusicFiles = async (type: "audio" | "video") => {
     const media = await MediaLibrary.getAssetsAsync({
@@ -103,6 +122,15 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     setisMusicPlaying(true);
     await soundAudio.playAsync();
   }
+  // pause sound
+  // Pause sound
+  async function pauseSound(type: "play" | "pause") {
+    if (sound && type == "pause") {
+      await sound.pauseAsync();
+    } else if (sound && type == "play") {
+      await sound.playAsync();
+    }
+  }
 
   useEffect(() => {
     return sound
@@ -136,7 +164,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   // Drezer Api
   const getMusicGenre = async () => {
     const uri = process.env.EXPO_PUBLIC_DREEZER_BASE_URL;
-    console.log(uri);
+
     const resp = await fetch(`${uri}/genre`);
     const dataResp = await resp.json();
 
@@ -158,6 +186,13 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         prevSong,
         isMusicPlaying,
         getMusicGenre,
+        pauseSound,
+        isPause,
+        prev,
+        next,
+        setisPause,
+        setnext,
+        setprev,
       }}
     >
       {children}

@@ -4,14 +4,16 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import { Href, useRouter } from "expo-router";
 import { localMusicType } from "@/app/utils/types";
 import { useUserContext } from "@/hooks/context";
+import { MaterialIcons } from "@expo/vector-icons";
 
 type Props = {
   item: localMusicType;
 };
 const PhoneSong = ({ item }: Props) => {
   const navigation = useRouter();
-  const { playSound, musicFiles } = useUserContext();
-  const [pauseActive, setpauseActive] = useState(false);
+  const { playSound, musicFiles, pauseSound } = useUserContext();
+  const [firstimePlay, setfirstimePlay] = useState(true);
+  const [isPlay, setisPlay] = useState(true);
 
   return (
     <TouchableOpacity
@@ -49,7 +51,48 @@ const PhoneSong = ({ item }: Props) => {
         </View>
       </View>
 
-      <TouchableOpacity
+      {isPlay &&
+      musicFiles.filter((song) => song.id === item.id)[0].id === item.id ? (
+        <TouchableOpacity
+          onPress={async () => {
+            const itemid = musicFiles.filter((song) => song.id === item.id)[0];
+            if (itemid) {
+              if (firstimePlay) {
+                playSound(item.uri);
+                setfirstimePlay(false);
+                setisPlay(false);
+              } else {
+                console.log("play clicked");
+                await pauseSound("play");
+                setisPlay(false);
+              }
+            }
+          }}
+        >
+          <MaterialIcons name="play-circle-filled" size={48} color="#fff" />
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity
+          onPress={async () => {
+            const itemid = musicFiles.filter((song) => song.id === item.id)[0];
+            if (itemid) {
+              if (firstimePlay) {
+                playSound(item.uri);
+                setfirstimePlay(false);
+                setisPlay(true);
+              } else {
+                console.log("pause clicked");
+                await pauseSound("pause");
+                setisPlay(true);
+              }
+            }
+          }}
+        >
+          <MaterialIcons name="pause-circle-filled" size={48} color="#fff" />
+        </TouchableOpacity>
+      )}
+
+      {/* <TouchableOpacity
         onPress={() => {
           playSound(item.uri);
           setpauseActive(false);
@@ -60,7 +103,7 @@ const PhoneSong = ({ item }: Props) => {
         ) : (
           <AntDesign name="caretright" size={24} color="#fff" />
         )}
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </TouchableOpacity>
   );
 };

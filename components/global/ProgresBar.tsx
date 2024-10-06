@@ -4,17 +4,24 @@ import * as Progress from "react-native-progress";
 
 type Props = {
   duration: number | undefined; // Total duration of the song in milliseconds
+  isPause: boolean;
+  next: boolean;
+  prev: boolean;
 };
 
-const ProgresBar = ({ duration }: Props) => {
+const ProgresBar = ({ duration, isPause, next, prev }: Props) => {
   const [barProgress, setBarProgress] = useState(0);
-  console.log(duration, barProgress);
+  // console.log(duration, barProgress);
 
   useEffect(() => {
-    setBarProgress(0);
+    console.log(next, prev);
+    if (next && prev) {
+      setBarProgress(0);
+    }
+    let interval: NodeJS.Timeout | undefined;
     if (duration) {
-      if (duration > 0) {
-        const interval = setInterval(() => {
+      if (duration > 0 && !isPause) {
+        interval = setInterval(() => {
           setBarProgress((prevProgress) => {
             const newProgress = prevProgress + 1 / duration; // Increment by 1 second
             return newProgress > 1 ? 1 : newProgress; // Cap progress at 1 (100%)
@@ -23,9 +30,11 @@ const ProgresBar = ({ duration }: Props) => {
 
         // Clear interval when the component unmounts or the duration changes
         return () => clearInterval(interval);
+      } else {
+        clearInterval(interval);
       }
     }
-  }, [duration]);
+  }, [duration, isPause, next, prev]);
 
   return (
     <Progress.Bar
