@@ -42,7 +42,7 @@ const Player = () => {
       } else {
         setmusic(music[0]);
         if (music[0].uri) {
-          playSound(music[0].uri);
+          playSound(music[0].uri, music[0].id);
         }
       }
     }
@@ -81,7 +81,7 @@ const Player = () => {
           onPress={() => {
             const id = music?.id as string;
             const prevMusic = prevSong(id);
-            playSound(prevMusic.uri);
+            playSound(prevMusic.uri, prevMusic.id);
             setmusic(prevMusic);
             setprev(true);
             setnext(true);
@@ -120,7 +120,7 @@ const Player = () => {
           onPress={() => {
             const id = music?.id as string;
             const nextMusic = nextSong(id);
-            playSound(nextMusic.uri);
+            playSound(nextMusic.uri, nextMusic.id);
             setmusic(nextMusic);
             setnext(true);
             setprev(true);

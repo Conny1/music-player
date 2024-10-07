@@ -6,7 +6,7 @@ import { useLocalSearchParams } from "expo-router";
 import { localVideoType } from "@/app/utils/types";
 
 export default function VideoPlayer() {
-  const { getVideoById } = useUserContext();
+  const { getVideoById, pauseSound } = useUserContext();
   const video = useRef<Video>(null);
   const [status, setStatus] = useState({});
   const videoId = useLocalSearchParams();
@@ -14,6 +14,7 @@ export default function VideoPlayer() {
   useEffect(() => {
     const id = videoId.id as string;
     setmedia(getVideoById(id)[0]);
+    pauseSound("pause");
   }, []);
 
   return (

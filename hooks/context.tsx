@@ -19,7 +19,7 @@ type ContextType = {
   requestPermission: (
     type: "audio" | "video"
   ) => Promise<localMusicType[] | []>; // Async function to request permissions
-  playSound: (url: string) => Promise<void>;
+  playSound: (url: string, id: string) => Promise<void>;
   nextSong: (id: string) => localMusicType;
   prevSong: (id: string) => localMusicType;
   isMusicPlaying: boolean;
@@ -31,6 +31,7 @@ type ContextType = {
   setnext: React.Dispatch<React.SetStateAction<boolean>>;
   prev: boolean;
   setprev: React.Dispatch<React.SetStateAction<boolean>>;
+  playingMusic: localMusicType[];
 };
 
 // Provide a default empty context value
@@ -58,6 +59,7 @@ const defaultContextValue: ContextType = {
   setnext: () => false,
   prev: false,
   setprev: () => false,
+  playingMusic: [],
 };
 
 // Create a Context with the defined type
@@ -72,8 +74,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [isPause, setisPause] = useState(false);
   const [next, setnext] = useState(false);
   const [prev, setprev] = useState(false);
-  const video = useRef<Video>(null);
-
+  const [playingMusic, setplayingMusic] = useState<localMusicType[] | []>([]);
   const loadMusicFiles = async (type: "audio" | "video") => {
     const media = await MediaLibrary.getAssetsAsync({
       mediaType: type, // Fetch only audio files
@@ -109,7 +110,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   };
 
   // play audio
-  async function playSound(url: string) {
+  async function playSound(url: string, id: string) {
     console.log("Loading Sound", url);
     if (sound) {
       await sound.unloadAsync();
@@ -121,6 +122,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     console.log("Playing Sound");
     setisMusicPlaying(true);
     await soundAudio.playAsync();
+    setplayingMusic(getMusicById(id));
   }
   // pause sound
   // Pause sound
@@ -193,6 +195,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         setisPause,
         setnext,
         setprev,
+        playingMusic,
       }}
     >
       {children}

@@ -1,6 +1,5 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React, { useState } from "react";
-import AntDesign from "@expo/vector-icons/AntDesign";
 import { Href, useRouter } from "expo-router";
 import { localMusicType } from "@/app/utils/types";
 import { useUserContext } from "@/hooks/context";
@@ -11,7 +10,8 @@ type Props = {
 };
 const PhoneSong = ({ item }: Props) => {
   const navigation = useRouter();
-  const { playSound, musicFiles, pauseSound } = useUserContext();
+  const { playSound, musicFiles, pauseSound, setisPause, playingMusic } =
+    useUserContext();
   const [firstimePlay, setfirstimePlay] = useState(true);
   const [isPlay, setisPlay] = useState(true);
 
@@ -19,7 +19,7 @@ const PhoneSong = ({ item }: Props) => {
     <TouchableOpacity
       onPress={() => {
         const path = `/music/play/${item.id}` as Href<string>;
-
+        setisPause(false);
         navigation.push(path);
       }}
       style={styles.songContainer}
@@ -51,25 +51,18 @@ const PhoneSong = ({ item }: Props) => {
         </View>
       </View>
 
-      {isPlay &&
-      musicFiles.filter((song) => song.id === item.id)[0].id === item.id ? (
+      {isPlay && playingMusic.length > 0 && playingMusic[0].id === item.id ? (
         <TouchableOpacity
           onPress={async () => {
             const itemid = musicFiles.filter((song) => song.id === item.id)[0];
             if (itemid) {
-              if (firstimePlay) {
-                playSound(item.uri);
-                setfirstimePlay(false);
-                setisPlay(false);
-              } else {
-                console.log("play clicked");
-                await pauseSound("play");
-                setisPlay(false);
-              }
+              setfirstimePlay(true);
+              setisPlay(false);
+              pauseSound("pause");
             }
           }}
         >
-          <MaterialIcons name="play-circle-filled" size={48} color="#fff" />
+          <MaterialIcons name="pause-circle-filled" size={48} color="#fff" />
         </TouchableOpacity>
       ) : (
         <TouchableOpacity
@@ -77,18 +70,17 @@ const PhoneSong = ({ item }: Props) => {
             const itemid = musicFiles.filter((song) => song.id === item.id)[0];
             if (itemid) {
               if (firstimePlay) {
-                playSound(item.uri);
+                playSound(item.uri, item.id);
                 setfirstimePlay(false);
                 setisPlay(true);
-              } else {
-                console.log("pause clicked");
-                await pauseSound("pause");
-                setisPlay(true);
+              }
+              if (playingMusic[0]?.id !== item.id) {
+                setfirstimePlay(true);
               }
             }
           }}
         >
-          <MaterialIcons name="pause-circle-filled" size={48} color="#fff" />
+          <MaterialIcons name="play-circle-fill" size={48} color="#fff" />
         </TouchableOpacity>
       )}
 
