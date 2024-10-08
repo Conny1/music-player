@@ -9,7 +9,7 @@ export default function TabLayout() {
         headerShown: false,
         tabBarStyle: { backgroundColor: "#030303" },
         tabBarIcon: ({ focused }) => {
-          let iconName: "videocam" | "musical-notes" = "videocam";
+          let iconName: "list" | "videocam" | "musical-notes" = "videocam";
           let underline = focused
             ? { borderBottomWidth: 2, borderBottomColor: "#1e90ff" }
             : {};
@@ -18,6 +18,8 @@ export default function TabLayout() {
             iconName = "musical-notes";
           } else if (route.name === "video") {
             iconName = "videocam";
+          } else if (route.name === "playlist") {
+            iconName = "list";
           }
 
           return (
@@ -31,6 +33,7 @@ export default function TabLayout() {
     >
       <Tabs.Screen name="audio" />
       <Tabs.Screen name="video" />
+      <Tabs.Screen name="playlist" />
     </Tabs>
   );
 }

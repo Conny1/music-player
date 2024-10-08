@@ -32,6 +32,7 @@ type ContextType = {
   prev: boolean;
   setprev: React.Dispatch<React.SetStateAction<boolean>>;
   playingMusic: localMusicType[];
+  videoFiles: localVideoType[];
 };
 
 // Provide a default empty context value
@@ -60,6 +61,7 @@ const defaultContextValue: ContextType = {
   prev: false,
   setprev: () => false,
   playingMusic: [],
+  videoFiles: [],
 };
 
 // Create a Context with the defined type
@@ -196,6 +198,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         setnext,
         setprev,
         playingMusic,
+        videoFiles,
       }}
     >
       {children}
