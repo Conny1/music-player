@@ -1,5 +1,5 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import { Href, useRouter } from "expo-router";
 import { localVideoType } from "@/app/utils/types";
@@ -11,19 +11,19 @@ type Props = {
 const VideoCard = ({ item }: Props) => {
   const [thumUrl, setthumUrl] = useState("");
   const route = useRouter();
-  useEffect(() => {
-    const generateThumbnail = async () => {
-      try {
-        const { uri } = await VideoThumbnails.getThumbnailAsync(item.uri, {
-          time: 15000,
-        });
-        setthumUrl(uri);
-      } catch (e) {
-        console.warn(e);
-      }
-    };
-    generateThumbnail();
+  const generateThumbnail = useCallback(async () => {
+    try {
+      const { uri } = await VideoThumbnails.getThumbnailAsync(item.uri, {
+        time: 15000,
+      });
+      setthumUrl(uri);
+    } catch (e) {
+      console.warn(e);
+    }
   }, [item]);
+  useEffect(() => {
+    generateThumbnail();
+  }, []);
   let palceHoledr =
     "https://images.unsplash.com/photo-1724086575243-6796fc662673?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
 
