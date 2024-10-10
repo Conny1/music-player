@@ -30,12 +30,12 @@ const PhoneSong = ({ item }: Props) => {
           source={{
             uri: "https://cdn.iconscout.com/icon/free/png-512/free-music-icon-download-in-svg-png-gif-file-formats--player-mp-song-audio-dj-user-interface-vol-2-pack-icons-14874.png?f=webp&w=256",
           }}
-          height={50}
-          width={50}
+          height={55}
+          width={55}
         />
         <View>
           <Text
-            style={{ color: "#fff", fontSize: 15, fontWeight: 900, width: 230 }}
+            style={{ color: "#fff", fontSize: 15, fontWeight: 900, width: 200 }}
           >
             {item.filename.substring(0, 50)}{" "}
             {item.filename.length > 50 ? " . . ." : null}
@@ -83,19 +83,6 @@ const PhoneSong = ({ item }: Props) => {
           <MaterialIcons name="play-circle-fill" size={48} color="#fff" />
         </TouchableOpacity>
       )}
-
-      {/* <TouchableOpacity
-        onPress={() => {
-          playSound(item.uri);
-          setpauseActive(false);
-        }}
-      >
-        {pauseActive ? (
-          <AntDesign name="pause" size={24} color="#fff" />
-        ) : (
-          <AntDesign name="caretright" size={24} color="#fff" />
-        )}
-      </TouchableOpacity> */}
     </TouchableOpacity>
   );
 };
@@ -116,6 +103,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 20,
     alignItems: "center",
+    width: "60%",
   },
   musicDetails: {
     display: "flex",

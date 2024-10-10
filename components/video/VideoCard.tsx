@@ -64,8 +64,6 @@ export default VideoCard;
 const styles = StyleSheet.create({
   videoInfoCon: {
     flex: 1,
-    maxWidth: 150,
-    // height: 150,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
