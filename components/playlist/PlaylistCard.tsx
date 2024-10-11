@@ -1,20 +1,66 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
+import {
+  StyleSheet,
+  Text,
+  ToastAndroid,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import React, { useEffect } from "react";
 import { localMusicType } from "@/app/utils/types";
 import PageViewer from "./PageViewer";
+import useLocalstorage from "@/hooks/Localstorage";
+import { MaterialIcons } from "@expo/vector-icons";
 
 type Props = {
   item: String;
   playlistData: { [key: string]: localMusicType[] } | undefined;
+  setplaylistData: React.Dispatch<
+    React.SetStateAction<
+      | {
+          [key: string]: localMusicType[];
+        }
+      | undefined
+    >
+  >;
+  setplayListkey: React.Dispatch<React.SetStateAction<[] | String[]>>;
 };
-const PlaylistCard = ({ item, playlistData }: Props) => {
+const PlaylistCard = ({
+  item,
+  playlistData,
+  setplayListkey,
+  setplaylistData,
+}: Props) => {
+  const { deleteData, getData } = useLocalstorage();
+
   return (
     <View style={styles.card}>
       <View style={styles.header}>
         <Text style={styles.title}>{item}</Text>
+        <TouchableOpacity
+          onPress={async () => {
+            const resp = await deleteData(null, item as string, "playlist");
+            if (resp?.success) {
+              ToastAndroid.show(resp.message, ToastAndroid.SHORT);
+
+              getData("playlistZeroOne(01)").then(
+                (resp: { [key: string]: localMusicType[] }) => {
+                  setplayListkey(Object.keys(resp));
+                  setplaylistData(resp);
+                }
+              );
+            }
+          }}
+        >
+          <MaterialIcons name="delete" size={30} color="#000" />
+        </TouchableOpacity>
       </View>
       <View style={styles.pageViewerContainer}>
-        <PageViewer playlistData={playlistData} item={item as string} />
+        <PageViewer
+          playlistData={playlistData}
+          playlistName={item as string}
+          setplayListkey={setplayListkey}
+          setplaylistData={setplaylistData}
+        />
       </View>
     </View>
   );
@@ -25,7 +71,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
     borderRadius: 15,
-    padding: 5,
+
     shadowColor: "black",
     shadowOffset: {
       width: 0,
@@ -41,8 +87,10 @@ const styles = StyleSheet.create({
   },
   innerCard: {},
   header: {
-    marginBottom: 16,
+    // marginBottom: 16,
     alignItems: "center",
+    flexDirection: "row",
+    gap: 30,
   },
   title: {
     fontSize: 30,

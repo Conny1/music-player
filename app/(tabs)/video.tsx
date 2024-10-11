@@ -1,6 +1,5 @@
 import {
   FlatList,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -13,8 +12,10 @@ import { useEffect, useState } from "react";
 import { localVideoType } from "../utils/types";
 
 const Video = () => {
-  const { requestPermission } = useUserContext();
-  const [videoFiles, setvideoFiles] = useState<localVideoType[] | []>([]);
+  const { requestPermission, videoFiles: videoData } = useUserContext();
+  const [videoFiles, setvideoFiles] = useState<localVideoType[] | []>(
+    videoData
+  );
   useEffect(() => {
     requestPermission("video").then((item) => setvideoFiles(item));
   }, []);

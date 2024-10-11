@@ -1,22 +1,14 @@
 import {
   FlatList,
-  Pressable,
   StyleSheet,
   Text,
-  TextInput,
-  ToastAndroid,
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import PhoneSong from "@/components/audio/PhoneSong";
+import React, { useEffect, useState } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import { localMusicType } from "../utils/types";
-import { useUserContext } from "@/hooks/context";
-import BottomSheet, {
-  BottomSheetFlatList,
-  BottomSheetView,
-} from "@gorhom/bottom-sheet";
+
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import useLocalstorage from "@/hooks/Localstorage";
 import PlaylistCard from "@/components/playlist/PlaylistCard";
@@ -25,7 +17,7 @@ import BottomeSheet from "@/components/playlist/BottomeSheet";
 const Playlist = () => {
   const [open, setopen] = useState(0);
 
-  const { getData, storeData } = useLocalstorage();
+  const { getData } = useLocalstorage();
   const [playListkey, setplayListkey] = useState<String[] | []>([]);
   const [playlistData, setplaylistData] = useState<
     | {
@@ -73,13 +65,15 @@ const Playlist = () => {
                   key={index}
                   item={item}
                   playlistData={playlistData}
+                  setplaylistData={setplaylistData}
+                  setplayListkey={setplayListkey}
                 />
               );
             }}
           />
         ) : (
-          <TouchableOpacity>
-            <MaterialIcons name="playlist-add" size={50} color="black" />
+          <TouchableOpacity style={styles.addIcon}>
+            <MaterialIcons name="playlist-add" size={100} color="#fff" />
           </TouchableOpacity>
         )}
         {/* bottom shit */}
@@ -111,5 +105,9 @@ const styles = StyleSheet.create({
     width: 120,
     flexDirection: "row",
     gap: 10,
+  },
+  addIcon: {
+    // alignSelf: "center",
+    margin: "auto",
   },
 });

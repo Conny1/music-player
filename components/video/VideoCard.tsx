@@ -44,13 +44,17 @@ const VideoCard = ({ item }: Props) => {
       />
 
       <View>
-        <Text style={{ color: "#fff", fontSize: 15, fontWeight: 900 }}>
+        <Text
+          style={{ color: "#fff", fontSize: 15, fontWeight: 900, padding: 5 }}
+        >
           {item.filename.substring(0, 50)}{" "}
           {item.filename.length > 50 ? " . . ." : null}
         </Text>
         <View style={styles.musicDetails}>
-          <Text style={{ color: "#fff", fontSize: 10 }}>{item.mediaType}</Text>
-          <Text style={{ color: "#fff", fontSize: 10 }}>
+          <Text style={{ color: "#fff", fontSize: 10, padding: 5 }}>
+            {item.mediaType}
+          </Text>
+          <Text style={{ color: "#fff", fontSize: 10, padding: 5 }}>
             {(item.duration / 60).toFixed(2)} min
           </Text>
         </View>

@@ -49,7 +49,61 @@ const useLocalstorage = () => {
     }
   };
 
-  return { data, getData, storeData };
+  const deleteData = async (
+    payload: localMusicType | null,
+    playlistName: string,
+    type: string
+  ) => {
+    try {
+      const data = (await getData("playlistZeroOne(01)")) as {
+        [key: string]: localMusicType[];
+      };
+      if (type === "media" && payload) {
+        if (data) {
+          if (data[playlistName]) {
+            const newData = data[playlistName].filter(
+              (item) => item.id !== payload.id
+            );
+            if (newData.length === 0)
+              return {
+                success: true,
+                message: "Playlist cannot be empty",
+              };
+            data[playlistName] = newData;
+            const jsonValue = JSON.stringify(data);
+            await AsyncStorage.setItem("playlistZeroOne(01)", jsonValue);
+            return {
+              success: true,
+              message: "Media deleted",
+            };
+          } else {
+            return {
+              success: false,
+              message: " Media does not exist",
+            };
+          }
+        }
+      } else {
+        delete data[playlistName];
+        const jsonValue = JSON.stringify(data);
+        await AsyncStorage.setItem("playlistZeroOne(01)", jsonValue);
+        return {
+          success: true,
+          message: " Playlist deleted",
+        };
+      }
+
+      return {
+        success: false,
+        message: "try again later",
+      };
+    } catch (e) {
+      // saving error
+      console.log(e);
+    }
+  };
+
+  return { data, getData, storeData, deleteData };
 };
 
 export default useLocalstorage;

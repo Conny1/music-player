@@ -16,6 +16,7 @@ const Audio = () => {
   const [musicFiles, setmusicFiles] = useState<localMusicType[] | []>([]);
   useEffect(() => {
     requestPermission("audio").then((item) => setmusicFiles(item));
+    requestPermission("video");
   }, []);
 
   return (
