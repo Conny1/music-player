@@ -7,7 +7,7 @@ import {
   View,
   TouchableOpacity,
 } from "react-native";
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import BottomSheet, {
   BottomSheetFlatList,
   BottomSheetView,
@@ -18,14 +18,34 @@ import CheckBox from "@/components/playlist/CheckBox";
 import { useUserContext } from "@/hooks/context";
 type Props = {
   open: number;
+  setplaylistData: React.Dispatch<
+    React.SetStateAction<
+      | {
+          [key: string]: localMusicType[];
+        }
+      | undefined
+    >
+  >;
+  setplayListkey: React.Dispatch<React.SetStateAction<[] | String[]>>;
 };
-const BottomeSheet = ({ open }: Props) => {
+const BottomeSheet = ({ open, setplayListkey, setplaylistData }: Props) => {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [selectedMedia, setselectedMedia] = useState<localMusicType[] | []>([]);
   const [playListName, setplayListName] = useState("");
   const [isVideo, setisVideo] = useState(false);
-  const { storeData } = useLocalstorage();
+  const { storeData, getData } = useLocalstorage();
   const { musicFiles, videoFiles } = useUserContext();
+
+  // callbacks
+
+  useEffect(() => {
+    getData("playlistZeroOne(01)").then(
+      (resp: { [key: string]: localMusicType[] }) => {
+        setplayListkey(Object.keys(resp));
+        setplaylistData(resp);
+      }
+    );
+  }, []);
 
   const handleSheetChanges = useCallback(
     (index: number) => {

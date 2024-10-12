@@ -10,8 +10,15 @@ type Props = {
 };
 const PhoneSong = ({ item }: Props) => {
   const navigation = useRouter();
-  const { playSound, musicFiles, pauseSound, setisPause, playingMusic } =
-    useUserContext();
+  const {
+    playSound,
+    musicFiles,
+    pauseSound,
+    setisPause,
+    playingMusic,
+    setnext,
+    setprev,
+  } = useUserContext();
   const [firstimePlay, setfirstimePlay] = useState(true);
   const [isPlay, setisPlay] = useState(true);
 
@@ -58,6 +65,7 @@ const PhoneSong = ({ item }: Props) => {
             if (itemid) {
               setfirstimePlay(true);
               setisPlay(false);
+              setisPause(true);
               pauseSound("pause");
             }
           }}
@@ -73,6 +81,9 @@ const PhoneSong = ({ item }: Props) => {
                 playSound(item.uri, item.id);
                 setfirstimePlay(false);
                 setisPlay(true);
+                setisPause(false);
+                setnext(true);
+                setprev(true);
               }
               if (playingMusic[0]?.id !== item.id) {
                 setfirstimePlay(true);

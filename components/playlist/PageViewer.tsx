@@ -7,6 +7,7 @@ import { VideoCard } from "../video";
 import PhoneSong from "../audio/PhoneSong";
 import { useUserContext } from "@/hooks/context";
 import useLocalstorage from "@/hooks/Localstorage";
+import { ProgressBar } from "../global";
 
 type Props = {
   playlistData: { [key: string]: localMusicType[] } | undefined;
@@ -28,7 +29,19 @@ const PageViewer = ({
   setplaylistData,
 }: Props) => {
   //   console.log(playlistData);
-  const { playSound } = useUserContext();
+  const {
+    playingMusic,
+    isPause,
+    prev,
+    next,
+    playSound,
+    setisPause,
+    nextSong,
+    setnext,
+    setprev,
+    pauseSound,
+    prevSong,
+  } = useUserContext();
   const [triggerScroll, settriggerScroll] = useState(0);
   const { deleteData, getData } = useLocalstorage();
 
@@ -45,6 +58,15 @@ const PageViewer = ({
     },
     [triggerScroll]
   );
+  const playNextSong = () => {
+    const id = playingMusic[0]?.id as string;
+    const nextMusic = nextSong(id);
+    playSound(nextMusic.uri, nextMusic.id);
+    // setmusic(nextMusic);
+    setnext(true);
+    setprev(true);
+    setisPause(false);
+  };
 
   return (
     <PagerView
@@ -59,7 +81,7 @@ const PageViewer = ({
       {playlistData &&
         playlistData[playlistName]?.map((item, i) => {
           return (
-            <View key={i}>
+            <View key={i} style={styles.maniContainer}>
               {item.mediaType === "video" ? (
                 <VideoCard item={item} />
               ) : (
@@ -82,6 +104,16 @@ const PageViewer = ({
               >
                 <MaterialIcons name="delete" size={30} color="#fff" />
               </TouchableOpacity>
+
+              <View style={styles.progressContainer}>
+                <ProgressBar
+                  duration={item.duration}
+                  isPause={isPause}
+                  next={next}
+                  prev={prev}
+                  playNextSong={playNextSong}
+                />
+              </View>
             </View>
           );
         })}
@@ -90,6 +122,14 @@ const PageViewer = ({
 };
 
 const styles = StyleSheet.create({
+  maniContainer: {
+    display: "flex",
+  },
+  progressContainer: {
+    alignSelf: "center",
+    marginTop: 80,
+  },
+
   pagerView: {
     flex: 1,
 
@@ -100,6 +140,13 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: "40%",
     marginRight: 20,
+  },
+  btnGroup: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    marginTop: 30,
+    alignItems: "center",
   },
 });
 export default PageViewer;

@@ -13,6 +13,8 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import useLocalstorage from "@/hooks/Localstorage";
 import PlaylistCard from "@/components/playlist/PlaylistCard";
 import BottomeSheet from "@/components/playlist/BottomeSheet";
+import { ProgressBar } from "@/components/global";
+import { useUserContext } from "@/hooks/context";
 
 const Playlist = () => {
   const [open, setopen] = useState(0);
@@ -77,7 +79,11 @@ const Playlist = () => {
           </TouchableOpacity>
         )}
         {/* bottom shit */}
-        <BottomeSheet open={open} />
+        <BottomeSheet
+          open={open}
+          setplaylistData={setplaylistData}
+          setplayListkey={setplayListkey}
+        />
       </View>
     </GestureHandlerRootView>
   );

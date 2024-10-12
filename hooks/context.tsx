@@ -4,11 +4,10 @@ import React, {
   useContext,
   ReactNode,
   useEffect,
-  useRef,
 } from "react";
 import * as MediaLibrary from "expo-media-library";
 import { genraType, localMusicType, localVideoType } from "@/app/utils/types";
-import { Audio, Video } from "expo-av";
+import { Audio, InterruptionModeAndroid } from "expo-av";
 
 // Define the context type
 type ContextType = {
@@ -33,6 +32,7 @@ type ContextType = {
   setprev: React.Dispatch<React.SetStateAction<boolean>>;
   playingMusic: localMusicType[];
   videoFiles: localVideoType[];
+  playnextSongAutonaticly: (currentSongid: string) => void;
 };
 
 // Provide a default empty context value
@@ -62,6 +62,7 @@ const defaultContextValue: ContextType = {
   setprev: () => false,
   playingMusic: [],
   videoFiles: [],
+  playnextSongAutonaticly: (currentSongid) => {},
 };
 
 // Create a Context with the defined type
@@ -119,6 +120,15 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     }
 
     const { sound: soundAudio } = await Audio.Sound.createAsync({ uri: url });
+    await Audio.setAudioModeAsync({
+      // allowsRecordingIOS: false,
+      staysActiveInBackground: true,
+      // interruptionModeIOS: InterruptionModeIOS.DuckOthers,
+      // playsInSilentModeIOS: true,
+      shouldDuckAndroid: true,
+      interruptionModeAndroid: InterruptionModeAndroid.DuckOthers,
+      playThroughEarpieceAndroid: false,
+    });
     setSound(soundAudio);
 
     console.log("Playing Sound");
@@ -154,6 +164,15 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     }
 
     return song;
+  };
+
+  const playnextSongAutonaticly = (currentSongid: string) => {
+    const nextSongData = musicFiles.filter((item, i) =>
+      item.id === currentSongid && i <= musicFiles.length - 1 ? i + 1 : i
+    );
+    const nextSongId = nextSongData[0].id;
+    playSound(nextSong(nextSongId).uri, nextSong(nextSongId).id);
+    return nextSong(nextSongId);
   };
 
   const prevSong = (id: string) => {
@@ -199,6 +218,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         setprev,
         playingMusic,
         videoFiles,
+        playnextSongAutonaticly,
       }}
     >
       {children}

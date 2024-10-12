@@ -48,6 +48,16 @@ const Player = () => {
     }
   }, []);
 
+  const playNextSong = () => {
+    const id = music?.id as string;
+    const nextMusic = nextSong(id);
+    playSound(nextMusic.uri, nextMusic.id);
+    setmusic(nextMusic);
+    setnext(true);
+    setprev(true);
+    setisPause(false);
+  };
+
   return (
     <View style={styles.songInfoContainer}>
       <View style={styles.likeContainer}>
@@ -64,7 +74,6 @@ const Player = () => {
         </Text>
         <AntDesign name="heart" size={24} color="#fff" />
       </View>
-      <Text style={{ color: "gray", marginBottom: 30 }}>3000 days </Text>
 
       <View style={styles.progressContainer}>
         <ProgressBar
@@ -72,6 +81,7 @@ const Player = () => {
           isPause={isPause}
           next={next}
           prev={prev}
+          playNextSong={playNextSong}
         />
       </View>
 
@@ -116,17 +126,7 @@ const Player = () => {
           </TouchableOpacity>
         )}
 
-        <TouchableOpacity
-          onPress={() => {
-            const id = music?.id as string;
-            const nextMusic = nextSong(id);
-            playSound(nextMusic.uri, nextMusic.id);
-            setmusic(nextMusic);
-            setnext(true);
-            setprev(true);
-            setisPause(false);
-          }}
-        >
+        <TouchableOpacity onPress={playNextSong}>
           <MaterialIcons name="arrow-right" size={48} color="#fff" />
         </TouchableOpacity>
 

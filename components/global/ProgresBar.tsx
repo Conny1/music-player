@@ -1,20 +1,20 @@
 import { StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
 import * as Progress from "react-native-progress";
+import { useUserContext } from "@/hooks/context";
 
 type Props = {
   duration: number | undefined; // Total duration of the song in milliseconds
   isPause: boolean;
   next: boolean;
   prev: boolean;
+  playNextSong: () => void;
 };
 
-const ProgresBar = ({ duration, isPause, next, prev }: Props) => {
+const ProgresBar = ({ duration, isPause, next, prev, playNextSong }: Props) => {
   const [barProgress, setBarProgress] = useState(0);
-  // console.log(duration, barProgress);
 
   useEffect(() => {
-    console.log(next, prev);
     if (next && prev) {
       setBarProgress(0);
     }
@@ -24,6 +24,8 @@ const ProgresBar = ({ duration, isPause, next, prev }: Props) => {
         interval = setInterval(() => {
           setBarProgress((prevProgress) => {
             const newProgress = prevProgress + 1 / duration; // Increment by 1 second
+            // console.log(newProgress);
+
             return newProgress > 1 ? 1 : newProgress; // Cap progress at 1 (100%)
           });
         }, 1000); // Update progress every 1 second
@@ -35,6 +37,12 @@ const ProgresBar = ({ duration, isPause, next, prev }: Props) => {
       }
     }
   }, [duration, isPause, next, prev]);
+  useEffect(() => {
+    console.log(barProgress, isPause);
+    if (barProgress >= 1) {
+      playNextSong();
+    }
+  }, [barProgress]);
 
   return (
     <Progress.Bar
