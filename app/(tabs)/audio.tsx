@@ -14,10 +14,11 @@ import { useUserContext } from "@/hooks/context";
 const Audio = () => {
   const { requestPermission } = useUserContext();
   const [musicFiles, setmusicFiles] = useState<localMusicType[] | []>([]);
+  const [isPlaylist, setisPlaylist] = useState(0);
   useEffect(() => {
     requestPermission("audio").then((item) => setmusicFiles(item));
     requestPermission("video");
-  }, []);
+  }, [isPlaylist]);
 
   return (
     <View style={styles.libraryContainer}>
@@ -41,7 +42,7 @@ const Audio = () => {
         <FlatList
           data={musicFiles}
           renderItem={({ item, index }) => (
-            <PhoneSong key={index} item={item} />
+            <PhoneSong key={index} item={item} setisPlaylist={setisPlaylist} />
           )}
         />
       </View>

@@ -1,6 +1,6 @@
 import { localMusicType } from "@/app/utils/types";
 import { MaterialIcons } from "@expo/vector-icons";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { StyleSheet, View, TouchableOpacity, ToastAndroid } from "react-native";
 import PagerView from "react-native-pager-view";
 import { VideoCard } from "../video";
@@ -39,11 +39,12 @@ const PageViewer = ({
     nextSong,
     setnext,
     setprev,
-    pauseSound,
-    prevSong,
+    setMusicFiles,
   } = useUserContext();
   const [triggerScroll, settriggerScroll] = useState(0);
   const { deleteData, getData } = useLocalstorage();
+  const [nextSlide, setnextSlide] = useState(0);
+  const pagerRef = useRef<PagerView>(null); // Create a ref for PagerView
 
   const playSongOnScroll = useCallback(
     async (index: number) => {
@@ -52,12 +53,21 @@ const PageViewer = ({
           const data = playlistData[playlistName][index];
           if (data && data.mediaType === "audio") {
             await playSound(data.uri, data.id);
+            setMusicFiles(playlistData[playlistName]);
           }
         }
       }
     },
     [triggerScroll]
   );
+
+  useEffect(() => {
+    if (pagerRef.current) {
+      pagerRef.current.setPage(nextSlide); // Set page index using ref
+    }
+    console.log(playingMusic, "next lodes", nextSlide);
+  }, [playingMusic]);
+
   const playNextSong = () => {
     const id = playingMusic[0]?.id as string;
     const nextMusic = nextSong(id);
@@ -70,12 +80,17 @@ const PageViewer = ({
 
   return (
     <PagerView
+      ref={pagerRef}
       style={styles.pagerView}
       initialPage={0}
       onPageSelected={async (e) => {
         const selectedPageIndex = e.nativeEvent.position;
         settriggerScroll(selectedPageIndex);
+        setnextSlide(selectedPageIndex);
         await playSongOnScroll(selectedPageIndex);
+        if (playlistData) {
+          setMusicFiles(playlistData[playlistName]);
+        }
       }}
     >
       {playlistData &&
@@ -105,15 +120,19 @@ const PageViewer = ({
                 <MaterialIcons name="delete" size={30} color="#fff" />
               </TouchableOpacity>
 
-              <View style={styles.progressContainer}>
-                <ProgressBar
-                  duration={item.duration}
-                  isPause={isPause}
-                  next={next}
-                  prev={prev}
-                  playNextSong={playNextSong}
-                />
-              </View>
+              {item.mediaType === "audio" &&
+                playingMusic[0]?.id === item?.id && (
+                  <View style={styles.progressContainer}>
+                    <ProgressBar
+                      duration={item.duration}
+                      isPause={isPause}
+                      next={next}
+                      prev={prev}
+                      playNextSong={playNextSong}
+                      setnextSlide={setnextSlide}
+                    />
+                  </View>
+                )}
             </View>
           );
         })}

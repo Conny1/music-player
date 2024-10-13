@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useEffect } from "react";
+import React from "react";
 import { localMusicType } from "@/app/utils/types";
 import PageViewer from "./PageViewer";
 import useLocalstorage from "@/hooks/Localstorage";

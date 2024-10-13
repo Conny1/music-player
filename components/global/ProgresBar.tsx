@@ -9,14 +9,25 @@ type Props = {
   next: boolean;
   prev: boolean;
   playNextSong: () => void;
+  setnextSlide?: (value: React.SetStateAction<number>) => void;
 };
 
-const ProgresBar = ({ duration, isPause, next, prev, playNextSong }: Props) => {
+const ProgresBar = ({
+  duration,
+  isPause,
+  next,
+  prev,
+  playNextSong,
+  setnextSlide,
+}: Props) => {
   const [barProgress, setBarProgress] = useState(0);
 
   useEffect(() => {
     if (next && prev) {
       setBarProgress(0);
+      if (setnextSlide) {
+        setnextSlide((prev) => prev + 1);
+      }
     }
     let interval: NodeJS.Timeout | undefined;
     if (duration) {
@@ -38,7 +49,7 @@ const ProgresBar = ({ duration, isPause, next, prev, playNextSong }: Props) => {
     }
   }, [duration, isPause, next, prev]);
   useEffect(() => {
-    console.log(barProgress, isPause);
+    // console.log(barProgress, isPause);
     if (barProgress >= 1) {
       playNextSong();
     }

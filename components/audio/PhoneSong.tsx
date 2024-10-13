@@ -1,15 +1,18 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React, { useState } from "react";
-import { Href, useRouter } from "expo-router";
+import React, { useEffect, useState } from "react";
+import { Href, useNavigation, usePathname, useRouter } from "expo-router";
 import { localMusicType } from "@/app/utils/types";
 import { useUserContext } from "@/hooks/context";
 import { MaterialIcons } from "@expo/vector-icons";
 
 type Props = {
   item: localMusicType;
+  setisPlaylist?: React.Dispatch<React.SetStateAction<number>>;
 };
-const PhoneSong = ({ item }: Props) => {
-  const navigation = useRouter();
+const PhoneSong = ({ item, setisPlaylist }: Props) => {
+  const router = useRouter();
+  const navigation = usePathname();
+
   const {
     playSound,
     musicFiles,
@@ -21,13 +24,12 @@ const PhoneSong = ({ item }: Props) => {
   } = useUserContext();
   const [firstimePlay, setfirstimePlay] = useState(true);
   const [isPlay, setisPlay] = useState(true);
-
   return (
     <TouchableOpacity
       onPress={() => {
         const path = `/music/play/${item.id}` as Href<string>;
         setisPause(false);
-        navigation.push(path);
+        router.push(path);
       }}
       style={styles.songContainer}
     >
@@ -68,6 +70,11 @@ const PhoneSong = ({ item }: Props) => {
               setisPause(true);
               pauseSound("pause");
             }
+            if (setisPlaylist) {
+              if (navigation == "/audio") {
+                setisPlaylist((prev) => (prev >= 5 ? 1 : prev + 1));
+              }
+            }
           }}
         >
           <MaterialIcons name="pause-circle-filled" size={48} color="#fff" />
@@ -77,16 +84,25 @@ const PhoneSong = ({ item }: Props) => {
           onPress={async () => {
             const itemid = musicFiles.filter((song) => song.id === item.id)[0];
             if (itemid) {
-              if (firstimePlay) {
+              if (firstimePlay && playingMusic[0]?.id !== item.id) {
                 playSound(item.uri, item.id);
                 setfirstimePlay(false);
                 setisPlay(true);
                 setisPause(false);
                 setnext(true);
                 setprev(true);
+              } else {
+                pauseSound("play");
+                setnext(false);
+                setprev(false);
+                setisPlay(true);
+                setisPause(false);
               }
-              if (playingMusic[0]?.id !== item.id) {
-                setfirstimePlay(true);
+            }
+
+            if (setisPlaylist) {
+              if (navigation == "/audio") {
+                setisPlaylist((prev) => prev + 1);
               }
             }
           }}
