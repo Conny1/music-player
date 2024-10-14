@@ -13,12 +13,14 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import useLocalstorage from "@/hooks/Localstorage";
 import PlaylistCard from "@/components/playlist/PlaylistCard";
 import BottomeSheet from "@/components/playlist/BottomeSheet";
-import { ProgressBar } from "@/components/global";
-import { useUserContext } from "@/hooks/context";
+import UpdatePlaylist from "@/components/playlist/updatePlaylist";
 
 const Playlist = () => {
-  const [open, setopen] = useState(0);
-
+  const [open, setopen] = useState(-1);
+  const [updateModalOpen, setupdateModalOpen] = useState(-1);
+  const [existingDta, setexistingDta] = useState<localMusicType[]>([]);
+  const [updateKey, setupdateKey] = useState("");
+  const [playlistNameKey, setplaylistNameKey] = useState("");
   const { getData } = useLocalstorage();
   const [playListkey, setplayListkey] = useState<String[] | []>([]);
   const [playlistData, setplaylistData] = useState<
@@ -69,6 +71,10 @@ const Playlist = () => {
                   playlistData={playlistData}
                   setplaylistData={setplaylistData}
                   setplayListkey={setplayListkey}
+                  setupdateModalOpen={setupdateModalOpen}
+                  setexistingDta={setexistingDta}
+                  setplaylistNameKey={setplaylistNameKey}
+                  setupdateKey={setupdateKey}
                 />
               );
             }}
@@ -80,9 +86,21 @@ const Playlist = () => {
         )}
         {/* bottom shit */}
         <BottomeSheet
+          setOpen={setopen}
           open={open}
           setplaylistData={setplaylistData}
           setplayListkey={setplayListkey}
+        />
+
+        {/* bottom shit */}
+        <UpdatePlaylist
+          setOpen={setupdateModalOpen}
+          open={updateModalOpen}
+          setplaylistData={setplaylistData}
+          setplayListkey={setplayListkey}
+          existingDta={existingDta}
+          playlistNameKey={playlistNameKey}
+          updateKey={updateKey}
         />
       </View>
     </GestureHandlerRootView>

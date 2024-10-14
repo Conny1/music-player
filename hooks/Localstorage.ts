@@ -49,6 +49,45 @@ const useLocalstorage = () => {
     }
   };
 
+  const updatePlaylistData = async (
+    key: string,
+    playlistName: string,
+    payload: localMusicType[]
+  ) => {
+    try {
+      const data = (await getData("playlistZeroOne(01)")) as {
+        [key: string]: localMusicType[];
+      };
+
+      if (data) {
+        if (data[key]) {
+          delete data[key];
+
+          data[playlistName] = payload;
+          const jsonValue = JSON.stringify(data);
+          await AsyncStorage.setItem("playlistZeroOne(01)", jsonValue);
+          return {
+            success: true,
+            message: "Media Updated",
+          };
+        } else {
+          return {
+            success: false,
+            message: " Media does not exist",
+          };
+        }
+      }
+
+      return {
+        success: false,
+        message: "try again later",
+      };
+    } catch (e) {
+      // saving error
+      console.log(e);
+    }
+  };
+
   const deleteData = async (
     payload: localMusicType | null,
     playlistName: string,
@@ -103,7 +142,7 @@ const useLocalstorage = () => {
     }
   };
 
-  return { data, getData, storeData, deleteData };
+  return { data, getData, storeData, deleteData, updatePlaylistData };
 };
 
 export default useLocalstorage;

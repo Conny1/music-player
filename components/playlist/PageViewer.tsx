@@ -96,7 +96,7 @@ const PageViewer = ({
       {playlistData &&
         playlistData[playlistName]?.map((item, i) => {
           return (
-            <View key={i} style={styles.maniContainer}>
+            <View key={item.id} style={styles.maniContainer}>
               {item.mediaType === "video" ? (
                 <VideoCard item={item} />
               ) : (

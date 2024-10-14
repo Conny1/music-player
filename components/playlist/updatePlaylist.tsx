@@ -28,18 +28,24 @@ type Props = {
     >
   >;
   setplayListkey: React.Dispatch<React.SetStateAction<[] | String[]>>;
+  existingDta: localMusicType[];
+  playlistNameKey: string;
+  updateKey: string;
 };
-const BottomeSheet = ({
+const UpdatePlaylist = ({
   setOpen,
   open,
   setplayListkey,
   setplaylistData,
+  existingDta,
+  playlistNameKey,
+  updateKey,
 }: Props) => {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [selectedMedia, setselectedMedia] = useState<localMusicType[] | []>([]);
   const [playListName, setplayListName] = useState("");
   const [isVideo, setisVideo] = useState(true);
-  const { storeData, getData } = useLocalstorage();
+  const { updatePlaylistData, getData } = useLocalstorage();
   const { musicFiles, videoFiles, requestPermission } = useUserContext();
 
   // callbacks
@@ -50,6 +56,7 @@ const BottomeSheet = ({
     } else {
       requestPermission("audio").then((item) => setselectedMedia(item));
     }
+    setplayListName(playlistNameKey);
   }, [isVideo]);
 
   const handleSheetChanges = useCallback(
@@ -71,7 +78,11 @@ const BottomeSheet = ({
         return alert(`Select at least one ${isVideo ? "video" : "music"}`);
       }
     } else {
-      const data = await storeData(selectedMedia, playListName);
+      const data = await updatePlaylistData(
+        updateKey,
+        playListName,
+        selectedMedia
+      );
       const text = data?.message as string;
       if (text) {
         ToastAndroid.show(text, ToastAndroid.SHORT);
@@ -97,6 +108,7 @@ const BottomeSheet = ({
         <View style={styles.playlistForm}>
           <TextInput
             value={playListName}
+            defaultValue={playListName}
             onChangeText={(val) => setplayListName(val)}
             style={{ flex: 1, borderWidth: 1, padding: 3 }}
             placeholder="Playlist name"
@@ -160,6 +172,7 @@ const BottomeSheet = ({
               item={item}
               setselectedMedia={setselectedMedia}
               isVideo={isVideo}
+              existingDta={existingDta}
             />
           );
         }}
@@ -168,7 +181,7 @@ const BottomeSheet = ({
   );
 };
 
-export default BottomeSheet;
+export default UpdatePlaylist;
 
 const styles = StyleSheet.create({
   bottomeSheetContainer: {

@@ -9,9 +9,10 @@ type Props = {
   item: localMusicType;
   setselectedMedia: React.Dispatch<React.SetStateAction<[] | localMusicType[]>>;
   isVideo: boolean;
+  existingDta?: localMusicType[];
 };
 
-const CheckBox = ({ item, setselectedMedia, isVideo }: Props) => {
+const CheckBox = ({ item, setselectedMedia, isVideo, existingDta }: Props) => {
   const [isChecked, setChecked] = useState(false);
   const [thumUrl, setthumUrl] = useState("");
   const generateThumbnail = useCallback(async () => {
@@ -37,10 +38,17 @@ const CheckBox = ({ item, setselectedMedia, isVideo }: Props) => {
     <View style={styles.checkboxContainer}>
       <Checkbox
         style={styles.checkbox}
-        value={isChecked}
+        value={
+          existingDta?.filter((dta) => dta.id === item.id)[0]?.id
+            ? true
+            : isChecked
+        }
         onValueChange={(val) => {
           if (val) {
-            setselectedMedia((prev) => [...prev, item]);
+            setselectedMedia((prev) => {
+              console.log(prev);
+              return [...prev, item];
+            });
             setChecked(true);
           } else {
             setselectedMedia((prev) =>

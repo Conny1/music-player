@@ -23,12 +23,20 @@ type Props = {
     >
   >;
   setplayListkey: React.Dispatch<React.SetStateAction<[] | String[]>>;
+  setupdateModalOpen: React.Dispatch<React.SetStateAction<number>>;
+  setexistingDta: React.Dispatch<React.SetStateAction<localMusicType[] | []>>;
+  setplaylistNameKey: React.Dispatch<React.SetStateAction<string>>;
+  setupdateKey: React.Dispatch<React.SetStateAction<string>>;
 };
 const PlaylistCard = ({
   item,
   playlistData,
   setplayListkey,
   setplaylistData,
+  setupdateModalOpen,
+  setexistingDta,
+  setplaylistNameKey,
+  setupdateKey,
 }: Props) => {
   const { deleteData, getData } = useLocalstorage();
 
@@ -36,23 +44,41 @@ const PlaylistCard = ({
     <View style={styles.card}>
       <View style={styles.header}>
         <Text style={styles.title}>{item}</Text>
-        <TouchableOpacity
-          onPress={async () => {
-            const resp = await deleteData(null, item as string, "playlist");
-            if (resp?.success) {
-              ToastAndroid.show(resp.message, ToastAndroid.SHORT);
-
-              getData("playlistZeroOne(01)").then(
-                (resp: { [key: string]: localMusicType[] }) => {
-                  setplayListkey(Object.keys(resp));
-                  setplaylistData(resp);
-                }
-              );
-            }
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 20,
           }}
         >
-          <MaterialIcons name="delete" size={30} color="#000" />
-        </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              setexistingDta(playlistData ? playlistData[item as string] : []);
+              setplaylistNameKey(item as string);
+              setupdateKey(item as string);
+              setupdateModalOpen(0);
+            }}
+          >
+            <MaterialIcons name="mode-edit-outline" size={30} color="#000" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={async () => {
+              const resp = await deleteData(null, item as string, "playlist");
+              if (resp?.success) {
+                ToastAndroid.show(resp.message, ToastAndroid.SHORT);
+
+                getData("playlistZeroOne(01)").then(
+                  (resp: { [key: string]: localMusicType[] }) => {
+                    setplayListkey(Object.keys(resp));
+                    setplaylistData(resp);
+                  }
+                );
+              }
+            }}
+          >
+            <MaterialIcons name="delete" size={30} color="#000" />
+          </TouchableOpacity>
+        </View>
       </View>
       <View style={styles.pageViewerContainer}>
         <PageViewer
@@ -96,6 +122,8 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: "bold",
     color: "green",
+    flex: 1,
+    textAlign: "center",
   },
   pageViewerContainer: {
     flex: 1,
