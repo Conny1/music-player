@@ -37,6 +37,7 @@ const Playlist = () => {
       (resp: { [key: string]: localMusicType[] }) => {
         setplayListkey(Object.keys(resp));
         setplaylistData(resp);
+        console.log(resp);
       }
     );
   }, []);
@@ -85,23 +86,27 @@ const Playlist = () => {
           </TouchableOpacity>
         )}
         {/* bottom shit */}
-        <BottomeSheet
-          setOpen={setopen}
-          open={open}
-          setplaylistData={setplaylistData}
-          setplayListkey={setplayListkey}
-        />
+        {open >= 0 && (
+          <BottomeSheet
+            setOpen={setopen}
+            open={open}
+            setplaylistData={setplaylistData}
+            setplayListkey={setplayListkey}
+          />
+        )}
 
         {/* bottom shit */}
-        <UpdatePlaylist
-          setOpen={setupdateModalOpen}
-          open={updateModalOpen}
-          setplaylistData={setplaylistData}
-          setplayListkey={setplayListkey}
-          existingDta={existingDta}
-          playlistNameKey={playlistNameKey}
-          updateKey={updateKey}
-        />
+        {updateModalOpen >= 0 && (
+          <UpdatePlaylist
+            setOpen={setupdateModalOpen}
+            open={updateModalOpen}
+            setplaylistData={setplaylistData}
+            setplayListkey={setplayListkey}
+            existingDta={existingDta}
+            playlistNameKey={playlistNameKey}
+            updateKey={updateKey}
+          />
+        )}
       </View>
     </GestureHandlerRootView>
   );

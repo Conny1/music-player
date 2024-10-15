@@ -52,11 +52,12 @@ const UpdatePlaylist = ({
 
   useEffect(() => {
     if (isVideo) {
-      requestPermission("video").then((item) => setselectedMedia(item));
+      requestPermission("video");
     } else {
-      requestPermission("audio").then((item) => setselectedMedia(item));
+      requestPermission("audio");
     }
     setplayListName(playlistNameKey);
+    setselectedMedia(existingDta);
   }, [isVideo]);
 
   const handleSheetChanges = useCallback(
@@ -71,6 +72,7 @@ const UpdatePlaylist = ({
 
   // save playlist to local storage
   const savePlaylist = async () => {
+    console.log(selectedMedia);
     if (!playListName || selectedMedia.length === 0) {
       if (!playListName) {
         return alert("Title is required");
@@ -172,7 +174,13 @@ const UpdatePlaylist = ({
               item={item}
               setselectedMedia={setselectedMedia}
               isVideo={isVideo}
-              existingDta={existingDta}
+              checked={
+                existingDta.filter((data) => data.id === item.id).length >= 1
+                  ? true
+                  : false
+              }
+              open={open}
+              // existingDta={existingDta}
             />
           );
         }}

@@ -9,11 +9,18 @@ type Props = {
   item: localMusicType;
   setselectedMedia: React.Dispatch<React.SetStateAction<[] | localMusicType[]>>;
   isVideo: boolean;
-  existingDta?: localMusicType[];
+  checked?: boolean;
+  open: number;
 };
 
-const CheckBox = ({ item, setselectedMedia, isVideo, existingDta }: Props) => {
-  const [isChecked, setChecked] = useState(false);
+const CheckBox = ({
+  item,
+  setselectedMedia,
+  isVideo,
+  checked,
+  open,
+}: Props) => {
+  const [isChecked, setChecked] = useState(checked);
   const [thumUrl, setthumUrl] = useState("");
   const generateThumbnail = useCallback(async () => {
     try {
@@ -24,13 +31,16 @@ const CheckBox = ({ item, setselectedMedia, isVideo, existingDta }: Props) => {
     } catch (e) {
       console.warn(e);
     }
-  }, [item]);
+  }, []);
 
   useEffect(() => {
     if (isVideo) {
       generateThumbnail();
     }
-  }, []);
+    if (open && open === -1 && checked === undefined) {
+      setChecked(false);
+    }
+  }, [open]);
   let palceHoledr =
     "https://images.unsplash.com/photo-1724086575243-6796fc662673?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
 
@@ -38,22 +48,20 @@ const CheckBox = ({ item, setselectedMedia, isVideo, existingDta }: Props) => {
     <View style={styles.checkboxContainer}>
       <Checkbox
         style={styles.checkbox}
-        value={
-          existingDta?.filter((dta) => dta.id === item.id)[0]?.id
-            ? true
-            : isChecked
-        }
+        value={isChecked}
         onValueChange={(val) => {
+          console.log(val);
           if (val) {
             setselectedMedia((prev) => {
-              console.log(prev);
+              // console.log(prev);
               return [...prev, item];
             });
             setChecked(true);
           } else {
-            setselectedMedia((prev) =>
-              prev.filter((song) => song.id !== item.id)
-            );
+            setselectedMedia((prev) => {
+              // console.log(prev);
+              return prev.filter((song) => song.id !== item.id);
+            });
             setChecked(false);
           }
         }}

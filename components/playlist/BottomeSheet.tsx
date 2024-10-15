@@ -46,9 +46,9 @@ const BottomeSheet = ({
 
   useEffect(() => {
     if (isVideo) {
-      requestPermission("video").then((item) => setselectedMedia(item));
+      requestPermission("video");
     } else {
-      requestPermission("audio").then((item) => setselectedMedia(item));
+      requestPermission("audio");
     }
   }, [isVideo]);
 
@@ -57,6 +57,7 @@ const BottomeSheet = ({
       console.log("handleSheetChanges", index);
       if (index === -1) {
         setOpen(-1); // Close the Bottom Sheet when it is dismissed
+        setselectedMedia([]);
       }
     },
     [open]
@@ -76,12 +77,15 @@ const BottomeSheet = ({
       if (text) {
         ToastAndroid.show(text, ToastAndroid.SHORT);
       }
-      getData("playlistZeroOne(01)").then(
+      await getData("playlistZeroOne(01)").then(
         (resp: { [key: string]: localMusicType[] }) => {
           setplayListkey(Object.keys(resp));
           setplaylistData(resp);
         }
       );
+      setOpen(-1);
+      setselectedMedia([]);
+      setplayListName("");
     }
   };
 
@@ -160,6 +164,7 @@ const BottomeSheet = ({
               item={item}
               setselectedMedia={setselectedMedia}
               isVideo={isVideo}
+              open={open}
             />
           );
         }}
