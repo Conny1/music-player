@@ -31,6 +31,7 @@ type ContextType = {
   prev: boolean;
   setprev: React.Dispatch<React.SetStateAction<boolean>>;
   playingMusic: localMusicType[];
+  setplayingMusic: React.Dispatch<React.SetStateAction<localMusicType[] | []>>;
   videoFiles: localVideoType[];
   playnextSongAutonaticly: (currentSongid: string) => void;
   setMusicFiles: React.Dispatch<React.SetStateAction<localMusicType[] | []>>;
@@ -65,6 +66,7 @@ const defaultContextValue: ContextType = {
   videoFiles: [],
   playnextSongAutonaticly: (currentSongid) => {},
   setMusicFiles: () => [],
+  setplayingMusic: () => [],
 };
 
 // Create a Context with the defined type
@@ -222,6 +224,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         videoFiles,
         playnextSongAutonaticly,
         setMusicFiles,
+        setplayingMusic,
       }}
     >
       {children}

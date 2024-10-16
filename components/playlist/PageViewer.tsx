@@ -119,20 +119,6 @@ const PageViewer = ({
               >
                 <MaterialIcons name="delete" size={30} color="#fff" />
               </TouchableOpacity>
-
-              {item.mediaType === "audio" &&
-                playingMusic[0]?.id === item?.id && (
-                  <View style={styles.progressContainer}>
-                    <ProgressBar
-                      duration={item.duration}
-                      isPause={isPause}
-                      next={next}
-                      prev={prev}
-                      playNextSong={playNextSong}
-                      setnextSlide={setnextSlide}
-                    />
-                  </View>
-                )}
             </View>
           );
         })}
